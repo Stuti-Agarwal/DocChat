@@ -6,14 +6,11 @@ import requests
 import uvicorn
 import pdfplumber
 import os
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.text_splitter import CharacterTextSplitter
-from langchain import OpenAI, VectorDBQA
-from langchain.document_loaders import DirectoryLoader
-# import magic
-# import nltk
+
 import openai
+
+
+
 from pydantic import BaseModel
 import io
 import docx
@@ -24,19 +21,8 @@ import io
 import cv2
 from paddleocr import PaddleOCR, draw_ocr
 import numpy as np
-from langchain.document_loaders import TextLoader
 
-from dotenv import load_dotenv
-load_dotenv()
-
-
-import os
-
-# openai_key = os.environ.get("OPENAI_API_KEY")
-
-# import pytesseract
-
-openai.api_key = "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"
+openai.api_key = "OpenAI key"
 
 
 # from ExtractTable import *
@@ -57,26 +43,10 @@ app = FastAPI()
 
 # Configure CORS
 origins = ["*"]  # Add allowed origins here
-app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=[""], allow_headers=[""])
-
-vector_store_path = r"C:\Users\cheth\Documents\cognitus\server\local"
-faiss_index_path = '/local/faiss'
+app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
 
 
-def process(extracted_text):
-    try:
-        char_text_splitter = CharacterTextSplitter(chunk_size=2000, chunk_overlap=0)
-        openAI_embeddings = OpenAIEmbeddings(openai_api_key="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")
-        doc_texts = char_text_splitter.split_text(extracted_text)
-        # vStore = Chroma.from_documents(doc_texts, openAI_embeddings)
-        vStore = Chroma.from_texts(doc_texts, openAI_embeddings, persist_directory=vector_store_path)
-        vStore.persist()
-        # return ""
-        # Perform additional processing with the vStore or other operations
-        
-    except Exception as e:
-        print(e)
-        # Handle exceptions here
+
 
 @app.post("/ocr/image")
 async def ocr(file: UploadFile = File(...)):
@@ -93,25 +63,18 @@ async def ocr(file: UploadFile = File(...)):
         for line in result:
             for item in line:
                 text += item[1][0]
-        process(text)    
-        # loader = TextLoader(text)
-
-        # docs = loader.load()
-        
-        process(text)    
+                
         return text
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
     
-from langchain.document_loaders import TextLoader
-
 
 
 @app.post("/ocr/pdf")
 async def ocr_pdf(file: UploadFile = File(...)):
     try:
         pdf = pdfplumber.open(file.file)
-    
+        
         full_text = ""
         
         for page in pdf.pages:
@@ -119,11 +82,7 @@ async def ocr_pdf(file: UploadFile = File(...)):
             full_text += page_text
         
         pdf.close()
-        # loader = TextLoader(full_text)
-
-        # docs = loader.load()
         
-        process(full_text)
         return full_text
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
@@ -170,17 +129,6 @@ async def ocr_docx(file: UploadFile = File(...)):
 
         final= ""+ extracted_text + result_string
 
-
-        # with open('output.txt', 'w') as file:
-        #     file.write(final)
-
-        # loader = TextLoader(final)
-        # print("loader=",loader)
-        # docs = loader.load()
-        # print("docs = ", docs)
-        # process(docs)
-
-        process(final)
         return final
 
     except Exception as e:
@@ -196,20 +144,18 @@ async def call_api(text: str = Form(...)):
         #     'inputs': text
         # }).json()
         print(text)
-        openAI_embeddings = OpenAIEmbeddings(openai_api_key="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")
         # return text
-        vStore = Chroma(embedding_function=openAI_embeddings,persist_directory= vector_store_path)
-        vStore.get()
-        model = VectorDBQA.from_chain_type(llm=OpenAI(model_name="text-davinci-003"), chain_type="stuff", vectorstore=vStore) 
-        response = model.run(text)
-        
+
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=text,
+            temperature=0.6,
+        )
 
         print(response)
-        return response
+        return response.choices[0].text
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
-        # print('There seems to be an issue. We will get back to you soon: ', e)
-
 
 
 if __name__ == '__main__':
