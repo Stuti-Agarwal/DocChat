@@ -1,0 +1,95 @@
+/* .upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+  }
+  
+  .file-input {
+    margin-bottom: 10px;
+  }
+  
+  .upload-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .upload-button:hover {
+    background-color: #0056b3;
+  }
+   */
+
+/* 
+   .upload-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .upload-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .upload-button:hover {
+    background-color: #0062cc;
+  }
+
+  .file-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  } */
+
+  /* ImageUploadPage.css */
+
+.upload-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 20px;
+  /* border: 1px solid #ccc; */
+  border-radius: 5px;
+  text-align: center; /* Center the contents horizontally */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+}
+
+.upload-button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px; /* Add some space between input and button */
+}
+
+.upload-button:hover {
+  background-color: #0062cc;
+}
+
+/* .file-input {
+} */
+
+.file-input-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.file-input-label:hover {
+  background-color: #0062cc;
+}
