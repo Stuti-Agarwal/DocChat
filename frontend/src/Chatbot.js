@@ -107,7 +107,7 @@ function Chatbot({context}) {
   const fetchBotResponse = async (message) => {
     try {
       const formData = new FormData();
-      message= "'" + context +". " + "'"+message
+      // message= "'" + context +". " + "'"+message
       formData.append('text', message);
   
       // Call backend API to get bot response
